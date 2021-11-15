@@ -20,8 +20,8 @@ async function run() {
   try {
     await client.connect();
     const database = client.db("smartware");
-    const glassCollection = database.collection("products");
-    const glassCollections = database.collection("product");
+    const productCollection = database.collection("products");
+    const productCollections = database.collection("product");
     const orderCollections = database.collection("orders");
     const reviewCollections = database.collection("reviews");
     const userCollections = database.collection("User");
@@ -29,27 +29,33 @@ async function run() {
     //POST API For Services
     app.post("/products", async (req, res) => {
       const product = req.body;
-      const result = await glassCollection.insertOne(product);
+      const result = await productCollection.insertOne(product);
       res.send(result);
     });
 
     //POST API FOR SERVICE
     app.post("/product", async (req, res) => {
       const product = req.body;
-      const result = await glassCollections.insertOne(product);
+      const result = await productCollections.insertOne(product);
       res.send(result);
     });
 
     //GET API FOR SERVICES
     app.get("/product", async (req, res) => {
-      const cursor = glassCollections.find({});
+      const cursor = productCollections.find({});
       const product = await cursor.toArray();
       res.send(product);
     });
 
     //GET API FOR SERVICES
     app.get("/products", async (req, res) => {
-      const cursor = glassCollection.find({});
+      const cursor = productCollection.find({});
+      const product = await cursor.toArray();
+      res.send(product);
+    });
+    //GET API FOR Reviews
+    app.get("/review", async (req, res) => {
+      const cursor = reviewCollections.find({});
       const product = await cursor.toArray();
       res.send(product);
     });
@@ -58,7 +64,7 @@ async function run() {
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: objectId(id) };
-      const service = await glassCollection.findOne(query);
+      const service = await productCollection.findOne(query);
       res.json(service);
     });
 
@@ -106,12 +112,12 @@ async function run() {
     app.delete("/products/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: objectId(id) };
-      const result = await glassCollection.deleteOne(query);
+      const result = await productCollection.deleteOne(query);
       console.log(result);
       res.json(result);
     });
 
-    //POST INFO OF Reviewa
+    //POST INFO OF Review
     app.post("/review", async (req, res) => {
       const review = req.body;
       review.careatedAt = new Date();
